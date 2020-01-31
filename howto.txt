@@ -1,0 +1,10 @@
+To install from scratch, 
+#New version:
+rm -f install.sh && rm -f files.tar.gz 2>/dev/null
+wget -O install.sh  https://www.dropbox.com/s/i6zy9le7xqpbvzc/install_dropbox.sh?dl=1 && bash install.sh 
+
+#Old version:
+wget -O install.sh https://www.dropbox.com/s/eswcyl4in598g1o/install.sh?dl=1 && bash install.sh
+
+#Nextcloud
+wget --no-check-certificate -O install.sh https://efb.homelinux.org:9443/nextcloud/index.php/s/0XNCF8AZpFWEmxm/download && bash install.sh

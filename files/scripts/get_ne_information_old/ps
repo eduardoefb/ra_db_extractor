@@ -1,0 +1,74 @@
+  PID TTY          TIME CMD
+ 1521 ?        00:00:00 systemd
+ 1523 ?        00:00:00 (sd-pam)
+ 7486 ?        00:00:00 ssh-agent
+ 7490 ?        00:00:03 dbus-daemon
+ 7503 ?        00:01:47 lxpanel
+ 7507 ?        00:00:18 xscreensaver
+ 7510 ?        00:00:24 thunar
+ 7511 ?        00:00:41 pidgin
+ 7518 ?        00:06:33 conky
+ 7525 ?        00:00:00 gvfs-udisks2-vo
+ 7528 ?        00:00:00 gvfsd
+ 7534 ?        00:00:00 gvfs-afc-volume
+ 7541 ?        00:00:00 gvfs-mtp-volume
+ 7545 ?        00:00:00 gvfs-goa-volume
+ 7549 ?        00:00:00 gvfs-gphoto2-vo
+ 7556 ?        00:00:00 menu-cached
+ 7560 ?        00:00:00 xfce4-power-man
+ 7562 ?        00:00:00 xfconfd
+ 7578 ?        00:42:18 skype
+ 7673 ?        00:00:00 at-spi-bus-laun
+ 7699 ?        00:00:00 gconfd-2
+ 8380 ?        00:00:00 sh
+ 8381 ?        00:00:00 xfce4-screensho
+ 8463 ?        00:00:02 dbus-daemon
+ 8466 ?        00:00:07 at-spi2-registr
+ 8692 ?        00:00:00 gvfsd-trash
+ 8699 ?        00:00:00 gvfsd-network
+ 8704 ?        00:00:00 gvfsd-smb-brows
+ 8713 ?        00:00:00 gvfsd-dnssd
+10753 ?        00:00:00 dconf-service
+11926 ?        00:00:00 gvfsd-metadata
+12736 ?        00:11:11 java
+16709 ?        00:00:00 sh
+16710 ?        00:00:16 terminal
+16714 ?        00:00:00 gnome-pty-helpe
+20106 ?        00:02:52 icedove
+20171 ?        00:25:12 iceweasel
+20383 ?        00:03:41 chrome
+20390 ?        00:00:00 cat <defunct>
+20391 ?        00:00:00 cat <defunct>
+20393 ?        00:00:00 chrome-sandbox
+20394 ?        00:00:00 chrome
+20396 ?        00:00:00 chrome-sandbox
+20397 ?        00:00:00 nacl_helper
+20399 ?        00:00:00 chrome
+20431 ?        00:03:03 chrome
+20433 ?        00:00:00 chrome
+20498 ?        00:03:40 chrome
+20534 ?        00:03:06 chrome
+20812 ?        00:00:00 sh
+20813 ?        00:01:41 geany
+20815 ?        00:00:00 gnome-pty-helpe
+21691 ?        00:00:09 VBoxXPCOMIPCD
+21696 ?        00:00:25 VBoxSVC
+21733 ?        00:33:26 VirtualBox
+23424 ?        00:00:00 oosplash
+23442 ?        00:01:50 soffice.bin
+23499 ?        00:00:00 sh
+23500 ?        00:00:07 geany
+23502 ?        00:00:00 gnome-pty-helpe
+24279 ?        00:00:08 chrome
+24306 ?        00:00:16 chrome
+24453 ?        00:00:38 chrome
+24692 ?        00:00:19 terrasync
+26022 ?        00:00:06 chrome
+26675 ?        00:05:14 chrome
+26700 ?        00:00:11 chrome
+27956 ?        00:00:04 chrome
+27989 ?        00:00:03 chrome
+29049 ?        00:00:00 sh <defunct>
+29078 ?        00:00:00 sh <defunct>
+29098 ?        00:00:00 sshd
+29101 ?        00:00:00 ps

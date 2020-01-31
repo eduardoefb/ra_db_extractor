@@ -1,0 +1,91 @@
+#!/bin/bash
+
+function force_kill_mysql(){
+	#At least, if the previous commands didn't kill mysql, than the next will do:
+	kill -9 `ps aux | grep mysql | grep -v grep | awk '{print $2}'` 2>/dev/null
+	sleep 3
+}
+
+source /opt/nokia/nedata/scripts/var.conf
+mkdir -pv $USER_DIR
+
+pw=`openssl rand -hex 20`
+apw=`openssl rand -hex 20`
+arpw=`openssl rand -hex 20`
+
+
+cat << EOF > $DB_CONFIG_FILE
+[mysql_configuration]
+
+#Root password for database:
+mysql_root_pw = $pw
+
+#Apache user for database:
+mysql_user = $APACHE_DB_USER
+mysql_user_pw = $apw
+
+EOF
+
+chown -v $LINUX_APACHE_USER:$LINUX_APACHE_GROUP $DB_CONFIG_FILE
+chmod -v 400 $DB_CONFIG_FILE
+
+if ! service mysql stop 2>/dev/null; then
+   killall mysqld
+fi
+force_kill_mysql
+\rm -rfv /var/lib/mysql/*
+mysql_install_db --user=mysql --basedir=/usr 2>/dev/null
+
+sleep 2
+systemctl start mysql.service
+sleep 3
+  
+mysqladmin -u root password $pw
+mysql -u root -p$pw << EOF
+DROP DATABASE IF EXISTS test;
+EOF
+
+#Remove customer log directory:
+rm -rf /opt/nokia/nedata/logs/* 2>/dev/null
+   
+mysqladmin -u root password "$pw" 2>/dev/null
+
+#Create tables:
+mysql -u root -p"$pw" 1>/dev/null<< EOF
+CREATE USER '$APACHE_DB_USER'@'localhost' IDENTIFIED BY '$apw';
+GRANT ALL PRIVILEGES ON *.* TO '$APACHE_DB_USER'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+DROP DATABASE IF EXISTS $DB1_NAME;
+DROP DATABASE IF EXISTS $DB2_NAME;
+CREATE DATABASE $DB1_NAME;
+CREATE DATABASE $DB2_NAME;
+USE $DB1_NAME;
+EOF
+
+
+#Create tables:
+echo -n "Creating tables ..."
+err=0
+mysql -u root -p"$pw" $DB1_NAME < $SCRIPT_DIR/tables.sql | err=1
+
+if [ $err -eq 0 ]; then
+	echo "Ok"
+else
+	echo "Failed!"
+fi
+
+
+#Populate databases with customers
+/opt/nokia/nedata/scripts/manager_customer add ALGAR_BRAZIL
+/opt/nokia/nedata/scripts/manager_customer add ALTAN_MEXICO
+/opt/nokia/nedata/scripts/manager_customer add CLARO_BRAZIL
+/opt/nokia/nedata/scripts/manager_customer add CLARO_CHILE
+/opt/nokia/nedata/scripts/manager_customer add CLARO_COLOMBIA
+/opt/nokia/nedata/scripts/manager_customer add OI_BRAZIL
+/opt/nokia/nedata/scripts/manager_customer add TIM_BRAZIL
+
+
+bash /opt/nokia/nedata/scripts/populate_locations.sh
+
+
+

@@ -1,0 +1,36 @@
+total 67236
+drwxr-xr-x  3 eduabati eduabati     4096 Dec  6 02:57 Android
+drwxrwxr-x  7 eduabati eduabati     4096 Nov 12 13:51 android-studio
+drwxr-xr-x  3 eduabati eduabati     4096 Dec  6 15:04 AndroidStudioProjects
+drwxr-xr-x  3 eduabati eduabati     4096 Jan 19 20:14 bin
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  5 14:37 certs
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  5 14:37 certs_bkp
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  5 14:37 certs_from_vm
+drwxr-xr-x  6 eduabati eduabati     4096 Dec  5 14:37 certs_from_vm_old
+drwxr-xr-x 19 eduabati eduabati     4096 Jan 22 15:23 citrix
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  6 17:51 Desktop
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  5 13:50 Documents
+drwxr-xr-x  3 eduabati eduabati     4096 Jan 22 15:23 Downloads
+drwx------  5 eduabati eduabati     4096 Jan 20 15:18 Dropbox
+drwxr-xr-x  6 eduabati eduabati     4096 Jan 17 19:04 fgfsScenery
+-rw-r--r--  1 eduabati eduabati 68681897 Dec 20 11:59 garagem.tar.gz
+drwxr-xr-x  8 eduabati eduabati     4096 Dec  6 17:52 glassfish-4.1
+drwxr-xr-x  6 eduabati eduabati     4096 Dec 15 23:43 GNS3
+drwxr-xr-x  3 eduabati eduabati     4096 Jan  7 08:33 ICAClient
+drwxr-xr-x 14 eduabati eduabati     4096 Dec  5 17:44 Images
+-rw-r--r--  1 eduabati eduabati     1307 Jan 21 13:45 manage.log
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  5 13:50 Music
+drwxr-xr-x 22 eduabati eduabati     4096 Jan 22 11:03 netbeans-8.0.2
+drwxr-xr-x 29 eduabati eduabati     4096 Dec 30 15:26 NetBeansProjects
+drwxr-xr-x 19 eduabati eduabati     4096 Jan 13 11:23 nokia
+-rw-r--r--  1 eduabati eduabati        0 Dec 18 09:18 output.pcap
+drwxr-xr-x 17 eduabati eduabati     4096 Jan  7 08:28 personal
+drwxr-xr-x  3 eduabati eduabati     4096 Dec 21 21:14 Pictures
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  5 13:50 Public
+drwxr-xr-x  3 eduabati eduabati     4096 Jan 13 09:19 rastool
+drwxr-xr-x  7 eduabati eduabati    32768 Jan 21 18:51 skype_download
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  5 13:50 Templates
+-rw-r--r--  1 eduabati eduabati        0 Jan  8 16:10 teste.log
+drwxr-xr-x  8 eduabati eduabati     4096 Jan 22 11:56 tmp
+drwxr-xr-x  2 eduabati eduabati     4096 Dec  5 13:50 Videos
+drwxr-xr-x 11 eduabati eduabati     4096 Jan 15 13:20 VirtualBox VMs

@@ -1,0 +1,411 @@
+#define DBG 0  // CHANGE IT TO 1 IF YOU WANT TO DEBUG
+
+integer max_seg, l;
+integer device_tot;
+integer device_id[];
+string device_name[];
+string tmp_dir, log_dir, log_dire;
+string username = "", password = "";
+string element_name, element_type, element_date, element_time;
+integer del_file;
+
+function main()
+   integer i, x;
+   string x1;
+
+   highlight(ON);
+   if(NOT(DBG))
+      highlight(OFF);
+   endif
+   
+   tmp_dir = strprint("%stmp\\",getworkdir());
+   del_file = fileopen(strprint("%sdeldire.bat", getworkdir()), NEW);
+
+   log_dire = getworkdir();
+   x1 = getpctime(1);
+   x1 = strreplace(x1, "-", "");
+   x1 = strreplace(x1, " ", "");
+   x1 = strreplace(x1, ":", "");
+   log_dire = strprint("%slogs\\%s\\",log_dire,x1);
+   system(strprint("mkdir %s", log_dire));
+
+
+   GetDevices();
+   for(i = 1; i <= device_tot; i++)
+      if(device_id[i] == 1)
+         system(strprint("del \"%s*.tmp\"", tmp_dir));
+         system(strprint("del \"%s*.log\"", tmp_dir));
+         x = ConnectMacro(device_name[i]);
+         if(x == 1)   
+            get(device_name[i]);
+         endif
+      endif
+   endfor
+   if(i > 0)
+      messagebox("Macro Completed","Check_Macro");
+      l = fileopen(strprint("%s\\script.bat", getworkdir()), NEW);
+      fileprint(l, strprint("cd %s\n", log_dire));
+      fileprint(l, strprint("zip -r logs.zip *.*\n", log_dire));
+      fileclose(l);
+      fileclose(del_file);
+      system(strprint("%s\\script.bat", getworkdir()));
+      system(strprint("%s\\deldire.bat", getworkdir()));
+      system(strprint("del %s\\script.bat", getworkdir()));
+      system(strprint("del %s\\deldire.bat", getworkdir()));
+      system(strprint("explorer %s",log_dire));     
+   endif
+//   tx("ZZZ;");
+   highlight(ON);
+	
+endfunction 
+
+function get(string bscname)
+
+
+   log_dir = strprint("%s\\%s\\", log_dire, element_name);
+   system(strprint("mkdir %s", log_dir));
+   fileprint(del_file, "rmdir /S /Q %s\n", log_dir);
+   promptcheck(NONE);
+   tx("\r");
+   pause(1);
+   promptcheck(BOTH);
+   get_zqni();
+   get_zqli();
+   get_zqri();
+   get_zeei();
+   get_zero();
+   get_zeeibcsu();
+   get_ztpi();
+   get_prfile();
+   get_fifile();
+   get_zusi();
+   get_tcsm();
+   get_zwqo();
+   get_zwoi();
+   get_zwos();
+   get_zw7i();
+   get_zw7i_ucap();
+
+endfunction
+
+
+function get_zqni()
+   system(strprint("echo BSC > %s\\ELEMENT_TYPE", log_dir));
+   logset(strprint("%s\\ZQNI.log", log_dir), NEW);
+   tx("ZQNI;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_zqli()
+   logset(strprint("%s\\ZQLI.log", log_dir), NEW);
+   tx("ZQLI;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_zqri()
+   logset(strprint("%s\\ZQRIOMU.log", log_dir), NEW);
+   tx("ZQRI:OMU;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_zeei()
+   string rline;
+   string r_tmp;
+   integer seg_tmp;
+   integer seg_used = 0;
+
+   max_seg = 50;
+   tx("ZWOS:2,665;");
+   if(getline(rline, "'ACTIVATED'"))
+      seg_used = 1;
+   endif   
+
+   logset(strprint("%s\\ZEEI.log", log_dir), NEW);
+   if(seg_used)
+      tx("ZEEI:SEG=ALL;");
+   else
+      tx("ZEEI;");
+   endif
+   while(getline(rline, "'BTS-'"))
+      strscan(rline, "%s %*s", r_tmp);
+      r_tmp = strreplace(r_tmp, "BTS-", "");
+      seg_tmp = strtoint(r_tmp, DEC);
+      if(max_seg < seg_tmp)
+         max_seg = seg_tmp;
+      endif
+   endwhile
+   if(max_seg > 3000)
+      max_seg = 3000;
+   endif
+   pause(1);
+   logclose();
+endfunction
+
+function get_zero()
+   logset(strprint("%s\\ZERO.log", log_dir), NEW);
+   tx("ZERO:BCF=1&&%d;", max_seg);
+   pause(1);
+   logclose();
+endfunction
+
+function get_zeeibcsu()
+   logset(strprint("%s\\ZEEIBCSU.log", log_dir), NEW);
+   tx("ZEEI::BCSU;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_ztpi()
+   logset(strprint("%s\\ZTPI.log", log_dir), NEW);
+   tx("ZTPI;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_prfile()
+   logset(strprint("%s\\PRFILE_VER.log", log_dir), NEW);
+   tx("ZWQV:OMU:PRFILEGX;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_fifile()
+   logset(strprint("%s\\FIFILE_VER.log", log_dir), NEW);
+   tx("ZWQV:OMU:FIFILEGX;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_zusi()
+   logset(strprint("%s\\ZUSI.log", log_dir), NEW);
+   tx("ZUSI;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_tcsm()
+   string rline;
+   integer tcsm_used = 0;
+   tx("ZUSI;");
+   if(getline(rline, "'TCSM-'"))
+      tcsm_used = 1;
+   endif
+   
+   if(tcsm_used)
+      logset(strprint("%s\\TCSM.log", log_dir), NEW);
+      tx("ZWTI:PI:TCSM;");
+      pause(1);
+      logclose();
+   endif
+
+endfunction
+
+function get_zwqo()
+   logset(strprint("%s\\ZWQO.log", log_dir), NEW);
+   tx("ZWQO:CR;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_zwoi()
+   logset(strprint("%s\\ZWOI.log", log_dir), NEW);
+   tx("ZWOI;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_zwos()
+   logset(strprint("%s\\ZWOS.log", log_dir), NEW);
+   tx("ZWOS;");
+   pause(1);
+   logclose();
+endfunction
+
+function get_zw7i()
+   logset(strprint("%s\\ZW7IFULL.log", log_dir), NEW);
+   tx("ZW7I:FEA,FULL:FSTATE=ON;");
+   pause(1);
+   logclose();
+endfunction
+
+
+function get_zw7i_ucap()
+   logset(strprint("%s\\ZW7IUCAP.log", log_dir), NEW);
+   tx("ZW7I:UCAP;");
+   pause(1);
+   logclose();
+endfunction
+
+
+
+void function GetDevices()
+   integer x;
+   string rline;
+   string element_name_tmp = "";
+   string name_tmp = "";
+
+   x = fileopen(_DEVINI,READ);
+   if(x < 0)
+      messagebox(strprint("Error in opening HIT2.INI file!\nCheck it and try again."));
+      abort(0, "Aborted!");
+   endif
+   device_tot = 1;
+   if(ask(element_name_tmp, strprint("Enter the bsc name words to find it on hit configuration:\nLeave it emtpy for ALL elements.")) == CANCEL)
+      abort(1,"User aborted!");
+   endif
+   while(filegetline(x, rline,"'NAME='"))
+      if(NOT(strstr(rline,"USERNAME")))
+         strfetch(rline,"'=':2-11", name_tmp);
+         if(strlength(element_name_tmp) == 0)
+            strfetch(rline,"'=':2-11", device_name[device_tot]);
+            device_name[device_tot] = strtrim(strreplace(device_name[device_tot], " ", ""),1);
+            device_name[device_tot] = strtrim(device_name[device_tot],2);
+            device_id[device_tot] = 0;
+            device_tot++;
+         elseif(strstr(strupper(name_tmp),strupper(element_name_tmp)))
+            strfetch(rline,"'=':2-11", device_name[device_tot]);
+            device_name[device_tot] = strtrim(strreplace(device_name[device_tot], " ", ""),1);
+            device_name[device_tot] = strtrim(device_name[device_tot],2);
+            device_id[device_tot] = 0;
+            device_tot++;
+         endif
+      endif
+   endwhile
+   device_tot--;
+   if(device_tot == 0)
+      messagebox("Nothing found!", "Error");
+      PrintError(strprint("Nothing found!\n"));
+      abort(0,"Nothing found!");
+   endif
+	if(device_tot == 1)
+		device_id[1] = 1;
+   elseif(askselection(device_name, device_id, device_tot, LIST, MULTI, "Choose your device:") == CANCEL)
+      abort(1, "User aborted!");
+	endif
+   
+endfunction
+
+
+integer function ConnectMacro(string connection)  //Connect to the NE and check its type
+// It will return 1 for BSC, 2 for RNC and 0 for other or if the username/password is incorrect
+   string rline;
+   integer i;
+   device(connection);
+   promptcheck(NONE);
+   i = 0;
+   tx("\r");
+   do
+      if(i > 0)
+         username = "";
+         password = "";
+         if(i >= 3)
+            messagebox("Too many user authentication failures!\nCheck it!", "Error",MB_ERROR);
+         endif
+      endif
+      if(getline(rline,"'ENTER USERNAME <'"))
+         if((strlength(username) == 0) OR (strlength(password) == 0))
+            if(ask(username,"Enter the username:") == CANCEL)
+               abort(0,"User aborted!");
+            endif
+            if(ask(password,"Enter the password:",TRUE) == CANCEL)
+               abort(0,"User aborted!");
+            endif
+         endif
+         tx("%s",username);
+         pause(1,"Wait...");
+      endif
+   
+      if(getline(rline,"'ENTER PASSWORD <'"))
+         tx("%s",password);
+         pause(1,"Wait...");
+      endif
+      i++;
+   until(NOT(getline(rline,"'/*** USER AUTHORIZATION FAILURE ***/'")));
+   promptcheck(BOTH);
+
+   tx("ZDCD;");
+   if(getline(rline,"'/*** YOUR PASSWORD HAS EXPIRED ***/'"))
+      if(strlength(password)==0)
+         if(ask(password,"Password expired. Enter the current password",1)==CANCEL)
+            abort(1,"Cancel Pressed");
+         endif
+      endif
+      promptcheck(NONE);
+      tx("ZIAG;");
+      pause(1,"Wait...");
+      tx("%s",password);
+      pause(1,"Wait...");
+      tx("%s",password);
+      pause(1,"Wait...");
+      tx("%s",password);
+      promptcheck(BOTH);	
+   endif
+
+   promptcheck(NONE);
+   tx("?");
+   pause(1,"Wait...");
+   if(getline(rline,"'BSC ' OR 'BSC3i ' OR 'FlexiBSC ' OR 'RNC '"))
+      strscan(rline,"%s %s %s %s",element_type,element_name, element_date, element_time);    
+      //Remove invalid caracteres from element_name -> Possible to happen on RNC, where element name is configured by patch
+      //element_name = CorrectName(element_name); 
+      PrintMsg(strprint("Element type: %s, element name:%s\n", element_type, element_name), 1);
+      if(strstr(element_type,"BSC"))
+         return 1;
+      elseif(strstr(element_type,"RNC"))
+         return 2;
+      endif
+   endif
+   pause(1,"Wait...");
+   tx("\r");
+   promptcheck(BOTH);
+   return 0;
+endfunction
+
+void function PrintError(string msg)
+   settextcolor(RGB(255,0,0));
+   print("%s",msg);
+   settextcolor(RGB(0,0,0));
+endfunction
+
+void function PrintMsg(string msg, integer space)
+   settextcolor(RGB(0,0,255));
+//   if(space == 1)
+//      print("\n");
+//   endif
+   print("%s",msg);
+   settextcolor(RGB(0,0,0));
+endfunction
+
+
+string function Space(string word)
+   integer x;
+   string ret_string = "";
+   for(x = 1; x <= strlength(word); x++)
+      ret_string = strprint("%s ",ret_string);
+   endfor
+   return ret_string;
+endfunction
+
+integer function LenL(string line)
+	integer cnt,len_cnt=0;
+	for(cnt=1;cnt<=strlength(line);cnt++)
+		if(line[cnt]>='0' AND line[cnt]<='9')
+			len_cnt++;
+		elseif(line[cnt]>='A' AND line[cnt]<='Z')
+			len_cnt++;
+		elseif(line[cnt]>='a' AND line[cnt]<='z')
+			len_cnt++;
+		endif
+	endfor
+	return len_cnt;
+endfunction
+
+
+
+
+
+
+

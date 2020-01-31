@@ -1,0 +1,127 @@
+#!/bin/bash
+
+function usage(){
+   echo "Usage:"
+   echo "$0 {list|add <customer name>|rem}"
+   echo "Where:"
+   echo "   list --> List customers"
+   echo "   add <cusometr name>--> Add customer"
+   echo "   rem --> Remove customer"
+   exit
+}
+
+function list(){
+   get_next_cust_id
+   next_id=$?
+   echo ""
+   echo "Total customers: "$(($next_id - 1))   
+   echo ""   
+   for d in `ls $NE_LOG_DIR`; do
+      if [ -f $NE_LOG_DIR/$d/.id ]; then
+         _id=`cat $NE_LOG_DIR/$d/.id`
+         echo "Id: $_id  Customer: $d"
+      fi
+   done
+   echo ""
+}
+
+function get_next_cust_id(){
+   in_id=1
+   for d in `ls $NE_LOG_DIR`; do
+      if [ -f $NE_LOG_DIR/$d/.id ]; then
+         _id=`cat $NE_LOG_DIR/$d/.id`       
+         if [ $in_id -le $_id ]; then
+            in_id=$(($_id + 1))
+         fi
+      fi
+   done
+   return $in_id
+}
+
+function add(){
+   if [ -z "$1" ]; then
+      usage
+   fi
+   
+   get_next_cust_id
+   next_id=$?
+   clear
+   cust=$1
+     
+   if [ -d $NE_LOG_DIR/$cust ]; then
+      echo "$cust already exists!"
+   else
+      echo -n "Creating $cust..."
+      mkdir -p $NE_LOG_DIR/$cust
+      echo $next_id > $NE_LOG_DIR/$cust/.id
+      if [ $? -eq 0 ] ; then
+         echo "Ok!"
+      else      
+         echo "Failed!"
+      fi
+      echo -n "Populating $cust on database..."
+      mysql -u `grep "mysql_user " $DB_CONFIG_FILE | awk '{print $NF}'` -p`grep "mysql_user_pw " $DB_CONFIG_FILE | awk '{print $NF}'` $DB1_NAME << EOF
+INSERT INTO cliente (name, id) VALUES("$cust", "$next_id");
+EOF
+      if [ $? -eq 0 ] ; then
+         echo "Ok!"
+      else      
+         echo "Failed!"
+      fi
+      
+      chown -R $LINUX_APACHE_USER:$LINUX_APACHE_GROUP $NE_LOG_DIR/$cust/ 2>/dev/null 
+   fi
+
+   
+}
+
+function rem(){
+   unset clist
+   ctot=0
+   for d in `ls $NE_LOG_DIR`; do
+      ctot=$(($ctot+1))
+      if [ -f $NE_LOG_DIR/$d/.id ]; then
+         _id=`cat $NE_LOG_DIR/$d/.id`
+         clist[ctot]=$d
+         idlist[ctot]=$_id
+      fi
+   done
+   
+   echo "Inform the customer id you want to remove:"
+   tid=0
+   for i in `seq 1 $ctot`; do
+      tid=$(($tid+1))
+      echo "$tid-->${clist[i]}"
+   done
+   loop=1
+   while [ $loop -eq 1 ]; do
+      read idr
+      if [ -z "${clist[idr]}" ]; then
+         echo "$idr doesn't exist!"
+      else
+         echo -n "Removing ${clist[idr]}.."
+         rm -rf $NE_LOG_DIR/${clist[idr]} 2>/dev/null
+         if [ $? -eq 0 ] ; then
+            echo "Ok!"
+         else
+            echo "Failed!"
+         fi
+         loop=0
+      fi
+   done
+   
+}
+
+source /opt/nokia/nedata/scripts/var.conf
+
+if [ -z "$1" ]; then
+   usage
+fi
+
+
+case $1 in
+   list) list ;;
+   add) add $2 ;;
+   rem) rem ;;
+   *) usage ;;
+esac

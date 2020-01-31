@@ -1,0 +1,15 @@
+#!/usr/bin/gnuplot
+# set terminal png transparent nocrop enhanced size 450,320 font "arial,8" 
+set key inside right top vertical Right noreverse noenhanced autotitle nobox
+set datafile missing '-'
+set style data linespoints
+set xtics border in scale 1,0.5 nomirror rotate by -45  autojustify
+set xtics  norangelimit
+set xtics   ()
+set title "ALGAR-LNCEL" 
+x = 0.0
+i = 22
+set term png
+set terminal png size 1000,600
+set output "/root/database/images/4-LNCEL.png"
+plot '/root/database/images/4-LNCEL.csv' using 3:xtic(2) title columnheader(2), for [i=3:3] '' using i title columnheader(i)
