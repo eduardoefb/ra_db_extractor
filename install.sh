@@ -40,8 +40,9 @@ if [ ! -f files.tar.gz ]; then
 	wget --no-check-certificate -O files.tar.gz https://efb.homelinux.org:9443/nextcloud/index.php/s/bRIz1LUiGmm98o5/download
 fi
 
-tmpdir=`mktemp -d`
-tar xvf files.tar.gz -C $tmpdir
+#tmpdir=`mktemp -d`
+tmpdir=`pwd`"/files"
+#tar xvf files.tar.gz -C $tmpdir
 source $tmpdir/scripts/var.conf
 
 rm -rf $HTML_DIR 2>/dev/null
