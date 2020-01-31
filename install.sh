@@ -32,17 +32,9 @@ fi
 
 check_internet_connection
 
-if [ ! -f files.tar.gz ]; then
-	cd /tmp/
-	rm -f files.tar.gz 2>/dev/null
-	#Download the fil from dropbox
-	#wget -O files.tar.gz https://www.dropbox.com/s/oksl891n7xf00dk/files.tar.gz?dl=1
-	wget --no-check-certificate -O files.tar.gz https://efb.homelinux.org:9443/nextcloud/index.php/s/bRIz1LUiGmm98o5/download
-fi
 
-#tmpdir=`mktemp -d`
-tmpdir=`pwd`"/files"
-#tar xvf files.tar.gz -C $tmpdir
+tmpdir=`mktemp -d`
+tar -xvf files.tar.gz -C $tmpdir
 source $tmpdir/scripts/var.conf
 
 rm -rf $HTML_DIR 2>/dev/null
